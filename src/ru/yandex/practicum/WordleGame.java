@@ -1,5 +1,7 @@
 package ru.yandex.practicum;
 
+import java.util.Objects;
+
 /*
 в этом классе хранится словарь и состояние игры
     текущий шаг
@@ -20,4 +22,9 @@ public class WordleGame {
 
     private WordleDictionary dictionary;
 
+    public final String isAnswer(final String answer) {
+        Objects.requireNonNull(answer);
+
+
+    }
 }
