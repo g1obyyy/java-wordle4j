@@ -39,7 +39,7 @@ public class WordleDictionary {
 
     public boolean isRussian(final String line) {
         Objects.requireNonNull(line);
-        for(int i = 0; i < line.length(); ++i) {
+        for (int i = 0; i < line.length(); ++i) {
             char c = line.charAt(i);
             if ((c < 'а' || c > 'я') && c != 'ё') {
                 return false;

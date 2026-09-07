@@ -65,7 +65,7 @@ public class WordleGame {
         char[] feedback = new char[5];
         Map<Character, Integer> targetCounts = new HashMap<>();
 
-        for(int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i) {
             char g = guess.charAt(i);
             char t = target.charAt(i);
             if (g == t) {
@@ -75,7 +75,7 @@ public class WordleGame {
             }
         }
 
-        for(int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 5; ++i) {
             if (feedback[i] == '+') {
                 continue;
             }
