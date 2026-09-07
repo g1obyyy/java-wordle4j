@@ -48,45 +48,45 @@ public class Wordle {
     }
 
     private static void playGameLoop(final WordleGame game, final Scanner scanner, final PrintWriter logger) {
-        logger.println("=== Starting game ===");
+        logger.println("=== Начало игры ===");
 
         while (!game.isOver()) {
-            System.out.printf("Round %d/6. Enter your word (or press Enter for hint): ", 7 - game.getAttempts());
+            System.out.printf("Попытка %d/6. Введите слово (или введите Enter для подсказки): ", 7 - game.getAttempts());
             String guess = scanner.nextLine().trim();
 
             if (guess.isEmpty()) {
                 guess = game.getHint();
-                System.out.println("Auto-move with hint: " + guess);
-                logger.println("Player wants the hint. Word picked: " + guess);
+                System.out.println("Подсказка использована: " + guess);
+                logger.println("Пользователь запросил подсказку. Слово: " + guess);
             } else {
-                logger.println("Player's word: " + guess);
+                logger.println("Слово пользователя: " + guess);
             }
 
             try {
                 String feedback = game.makeMove(guess);
                 System.out.println(feedback);
-                logger.println("Round result: " + feedback);
+                logger.println("Результат попытки: " + feedback);
             } catch (WordleGameException e) {
-                System.out.println("Gaming error: " + e.getMessage());
-                logger.println("Gaming error: " + e.getMessage());
+                System.out.println("Игровая ошибка: " + e.getMessage());
+                logger.println("Игровая ошибка: " + e.getMessage());
             }
         }
 
         if (game.isWin()) {
-            System.out.println("\nWell done! You guessed the word: " + game.getAnswer());
-            logger.println("Game finished: Player has won.");
+            System.out.println("\nОтлично! Вы угадали слово: " + game.getAnswer());
+            logger.println("Игра окончена: Пользователь победил.");
         } else {
-            System.out.println("\nGame over! The correct word was: " + game.getAnswer());
-            logger.println("Game finished: Player lost. Secret word: " + game.getAnswer());
+            System.out.println("\nИгра окончена! Верное слово было: " + game.getAnswer());
+            logger.println("Игра окончена: Игрок проиграл. Верное слово: " + game.getAnswer());
         }
     }
 
     private static void printMenu() {
-        System.out.println("======== Welcome to Wordle Game ========");
-        System.out.println("=============== Rules ==================");
-        System.out.println("+ MEANS u got the char right");
-        System.out.println("^ MEANS u got the char, but not on the right place");
-        System.out.println("- MEANS u missed the char at all");
-        System.out.println("============== Let's start =============");
+        System.out.println("====== Добро пожаловать в Wordle =======");
+        System.out.println("=============== Правила =================");
+        System.out.println("+ ОЗНАЧАЕТ точно попадание");
+        System.out.println("^ ОЗНАЧАЕТ в слове есть такая буква");
+        System.out.println("- ОЗНАЧАЕТ в слове нет такой буквы");
+        System.out.println("============== Начнем игру =============");
     }
 }

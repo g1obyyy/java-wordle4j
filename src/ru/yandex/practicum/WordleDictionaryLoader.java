@@ -24,13 +24,13 @@ public class WordleDictionaryLoader {
 
         Path path = Path.of(filename);
         if (!Files.exists(path)) {
-            throw new WordleTechnicalException("File not found: " + path.toAbsolutePath());
+            throw new WordleTechnicalException("Файл не найден: " + path.toAbsolutePath());
         }
         if (!Files.isRegularFile(path)) {
-            throw new WordleTechnicalException("The file is not regular for that Path: " + path.toAbsolutePath());
+            throw new WordleTechnicalException("По такому пути лежит не обычный файл: " + path.toAbsolutePath());
         }
         if (!Files.isReadable(path)) {
-            throw new WordleTechnicalException("That file is not readable for u: " + path.toAbsolutePath());
+            throw new WordleTechnicalException("У вас нет прав на чтение этого файла: " + path.toAbsolutePath());
         }
 
         return new WordleDictionaryLoader(path, logger);
@@ -47,13 +47,13 @@ public class WordleDictionaryLoader {
                     dictionary.addWord(word);
                 }
             }
-            logger.println("Dictionary is loaded. Words amount: " + dictionary.size());
+            logger.println("Словарь загружен. Количество загруженных слов: " + dictionary.size());
         } catch (IOException e) {
-            throw new WordleTechnicalException("Cannot read the dictionary: " + e.getMessage());
+            throw new WordleTechnicalException("Ошибка чтения словаря: " + e.getMessage());
         }
 
         if (dictionary.isEmpty()) {
-            throw new WordleTechnicalException("Dictionary is Empty!");
+            throw new WordleTechnicalException("Словарь пуст!");
         }
         return dictionary;
     }

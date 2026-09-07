@@ -23,7 +23,7 @@ public class WordleDictionary {
 
     public final String getRandomWord() {
         if (isEmpty()) {
-            throw new WordleGameException("Dictionary is empty, can not pick the word");
+            throw new WordleGameException("Словарь пуст, невозможно выбрать слово");
         }
         return words.get(random.nextInt(size()));
     }

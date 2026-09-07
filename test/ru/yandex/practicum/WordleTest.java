@@ -4,11 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.exception.RepeatWordException;
 import ru.yandex.practicum.exception.WordNotFoundInDictionary;
-import ru.yandex.practicum.exception.WordleGameException;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 
