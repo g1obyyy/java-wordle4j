@@ -1,6 +1,6 @@
 package ru.yandex.practicum;
 
-import java.util.Objects;
+import java.util.*;
 
 /*
 в этом классе хранится словарь и состояние игры
@@ -16,15 +16,70 @@ import java.util.Objects;
  */
 public class WordleGame {
 
-    private String answer;
+    private final String answer;
+    private final WordleDictionary dictionary;
 
-    private int steps;
+    private final List<String> remainingCandidates;
+    private final LinkedHashMap<String, String> history = new LinkedHashMap<>();
 
-    private WordleDictionary dictionary;
+    private int attempts = 6;
+    private boolean isWin = false;
 
-    public final String isAnswer(final String answer) {
-        Objects.requireNonNull(answer);
+    public WordleGame(final String answer, final WordleDictionary dictionary) {
+        this.answer = answer;
+        this.dictionary = dictionary;
+        this.remainingCandidates = new ArrayList<>(dictionary.getWords());
+    }
 
+    public void makeMove(final String guess) {
+        Objects.requireNonNull(guess);
 
+        --attempts;
+        String feedback = checkWord(guess);
+        history.put(guess, feedback);
+
+        if ("+++++".equals(feedback)) {
+            isWin = true;
+        } else {
+
+        }
+        return feedback;
+    }
+
+    public final String getHint() {
+
+    }
+
+    private String checkWord(final String guess) {
+        Objects.requireNonNull(guess);
+
+        char[] feedback = new char[5];
+        Map<Character, Integer> targetCounts = new HashMap<>();
+
+        for(int i = 0; i < 5; ++i) {
+            char g = guess.charAt(i);
+            char c = answer.charAt(i);
+            if (g == c) {
+                feedback[i] = '+';
+            } else {
+                targetCounts.put(c, targetCounts.getOrDefault(c, 0) + 1);
+            }
+        }
+
+        for(int i = 0; i < 5; ++i) {
+            if (feedback[i] == '+') {
+                continue;
+            }
+
+            char g = guess.charAt(i);
+            int count = targetCounts.getOrDefault(g, 0);
+            if (count > 0) {
+                feedback[i] = '^';
+                targetCounts.put(g, --count);
+            } else {
+                feedback[i] = '-';
+            }
+        }
+        return new String(feedback);
     }
 }
