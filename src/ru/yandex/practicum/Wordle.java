@@ -54,15 +54,15 @@ public class Wordle {
             System.out.printf("Попытка %d/6. Введите слово (или введите Enter для подсказки): ", 7 - game.getAttempts());
             String guess = scanner.nextLine().trim();
 
-            if (guess.isEmpty()) {
-                guess = game.getHint();
-                System.out.println("Подсказка использована: " + guess);
-                logger.println("Пользователь запросил подсказку. Слово: " + guess);
-            } else {
-                logger.println("Слово пользователя: " + guess);
-            }
-
             try {
+                if (guess.isEmpty()) {
+                    guess = game.getHint();
+                    System.out.println("Подсказка использована: " + guess);
+                    logger.println("Пользователь запросил подсказку. Слово: " + guess);
+                } else {
+                    logger.println("Слово пользователя: " + guess);
+                }
+
                 String feedback = game.makeMove(guess);
                 System.out.println(feedback);
                 logger.println("Результат попытки: " + feedback);

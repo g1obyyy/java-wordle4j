@@ -9,6 +9,9 @@ import java.util.*;
 
 public class WordleGame {
 
+    public static final int MAX_ATTEMPTS = 6;
+    public static final int MAX_WORD_LENGTH = 5;
+
     private final String answer;
     private final WordleDictionary dictionary;
     private final PrintWriter logger;
@@ -16,7 +19,7 @@ public class WordleGame {
     private final List<String> remainingCandidates;
     private final LinkedHashMap<String, String> history = new LinkedHashMap<>();
 
-    private int attempts = 6;
+    private int attempts = MAX_ATTEMPTS;
     private boolean isWin = false;
 
     public WordleGame(final String answer, final WordleDictionary dictionary, final PrintWriter logger) {
@@ -32,11 +35,11 @@ public class WordleGame {
         Objects.requireNonNull(rawGuess);
         String guess = dictionary.normalizeString(rawGuess);
 
-        if (guess.length() != 5 || !dictionary.contains(guess)) {
+        if (guess.length() != MAX_WORD_LENGTH || !dictionary.contains(guess)) {
             throw new WordNotFoundInDictionary("Такого слова нет в словаре: " + guess);
         }
         if (history.containsKey(guess)) {
-            throw new RepeatWordException("Be careful, the word has been used before: " + guess);
+            throw new RepeatWordException("Будьте внимательнее, вы уже вводили это слово: " + guess);
         }
 
         --attempts;
@@ -62,10 +65,10 @@ public class WordleGame {
     }
 
     private String checkWord(final String guess, final String target) {
-        char[] feedback = new char[5];
+        char[] feedback = new char[MAX_WORD_LENGTH];
         Map<Character, Integer> targetCounts = new HashMap<>();
 
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
             char g = guess.charAt(i);
             char t = target.charAt(i);
             if (g == t) {
@@ -75,7 +78,7 @@ public class WordleGame {
             }
         }
 
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
             if (feedback[i] == '+') {
                 continue;
             }
@@ -90,7 +93,7 @@ public class WordleGame {
             }
         }
 
-        StringBuilder sb = new StringBuilder(5);
+        StringBuilder sb = new StringBuilder(MAX_WORD_LENGTH);
         sb.append(feedback);
         return sb.toString();
     }

@@ -50,7 +50,7 @@ public class WordleDictionary {
 
     public boolean isValid(final String word) {
         Objects.requireNonNull(word);
-        return word.length() == 5 && isRussian(word);
+        return word.length() == WordleGame.MAX_WORD_LENGTH && isRussian(word);
     }
 
     public boolean isEmpty() {
