@@ -1,23 +1,116 @@
 package ru.yandex.practicum;
 
-/*
-в этом классе хранится словарь и состояние игры
-    текущий шаг
-    всё что пользователь вводил
-    правильный ответ
+import ru.yandex.practicum.exception.RepeatWordException;
+import ru.yandex.practicum.exception.WordNotFoundInDictionary;
+import ru.yandex.practicum.exception.WordleGameException;
 
-в этом классе нужны методы, которые
-    проанализируют совпадение слова с ответом
-    предложат слово-подсказку с учётом всего, что вводил пользователь ранее
+import java.io.PrintWriter;
+import java.util.*;
 
-не забудьте про специальные типы исключений для игровых и неигровых ошибок
- */
 public class WordleGame {
 
-    private String answer;
+    public static final int MAX_ATTEMPTS = 6;
+    public static final int MAX_WORD_LENGTH = 5;
 
-    private int steps;
+    private final String answer;
+    private final WordleDictionary dictionary;
+    private final PrintWriter logger;
 
-    private WordleDictionary dictionary;
+    private final List<String> remainingCandidates;
+    private final LinkedHashMap<String, String> history = new LinkedHashMap<>();
 
+    private int attempts = MAX_ATTEMPTS;
+    private boolean isWin = false;
+
+    public WordleGame(final String answer, final WordleDictionary dictionary, final PrintWriter logger) {
+        this.answer = answer;
+        this.dictionary = dictionary;
+        this.logger = logger;
+        this.remainingCandidates = new ArrayList<>(dictionary.getWords());
+
+        logger.println("Игра инициализирована. Загаданное слово: " + answer);
+    }
+
+    public final String makeMove(final String rawGuess) throws WordleGameException {
+        Objects.requireNonNull(rawGuess);
+        String guess = dictionary.normalizeString(rawGuess);
+
+        if (guess.length() != MAX_WORD_LENGTH || !dictionary.contains(guess)) {
+            throw new WordNotFoundInDictionary("Такого слова нет в словаре: " + guess);
+        }
+        if (history.containsKey(guess)) {
+            throw new RepeatWordException("Будьте внимательнее, вы уже вводили это слово: " + guess);
+        }
+
+        --attempts;
+        String feedback = checkWord(guess, this.answer);
+        history.put(guess, feedback);
+        logger.println("Ход: " + guess + " | Результат: " + feedback + " | Попыток осталось: " + attempts);
+
+        if ("+++++".equals(feedback)) {
+            isWin = true;
+        } else {
+            // ИСПРАВЛЕНО: добавлен ! и правильный порядок (guess, candidate)
+            remainingCandidates.removeIf(candidate -> !checkWord(guess, candidate).equals(feedback));
+            logger.println("После фильтрации кандидатов осталось: " + remainingCandidates.size());
+        }
+        return feedback;
+    }
+
+    public final String getHint() throws WordleGameException {
+        if (remainingCandidates.isEmpty()) {
+            throw new WordleGameException("Не осталось слов для подсказки!");
+        }
+        return remainingCandidates.getFirst();
+    }
+
+    private String checkWord(final String guess, final String target) {
+        char[] feedback = new char[MAX_WORD_LENGTH];
+        Map<Character, Integer> targetCounts = new HashMap<>();
+
+        for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
+            char g = guess.charAt(i);
+            char t = target.charAt(i);
+            if (g == t) {
+                feedback[i] = '+';
+            } else {
+                targetCounts.put(t, targetCounts.getOrDefault(t, 0) + 1);
+            }
+        }
+
+        for (int i = 0; i < MAX_WORD_LENGTH; ++i) {
+            if (feedback[i] == '+') {
+                continue;
+            }
+
+            char g = guess.charAt(i);
+            int count = targetCounts.getOrDefault(g, 0);
+            if (count > 0) {
+                feedback[i] = '^';
+                targetCounts.put(g, count - 1);
+            } else {
+                feedback[i] = '-';
+            }
+        }
+
+        StringBuilder sb = new StringBuilder(MAX_WORD_LENGTH);
+        sb.append(feedback);
+        return sb.toString();
+    }
+
+    public boolean isWin() {
+        return isWin;
+    }
+
+    public boolean isOver() {
+        return attempts == 0 || isWin();
+    }
+
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public final String getAnswer() {
+        return answer;
+    }
 }
